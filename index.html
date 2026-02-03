@@ -11,17 +11,8 @@
       <ul class="comments"></ul>
 
       <div class="add-form">
-        <input
-          type="text"
-          class="add-form-name"
-          placeholder="Введите ваше имя"
-        />
-        <textarea
-          type="textarea"
-          class="add-form-text"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-        ></textarea>
+        <input type="text" class="add-form-name" placeholder="Введите ваше имя"/>
+        <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
         <div class="add-form-row">
           <button class="add-form-button">Написать</button>
         </div>
@@ -31,6 +22,9 @@
 
   <script>
     "use strict"; 
+    const nameEl = document.querySelector('.add-form-name');
+    const textEl = document.querySelector('.add-form-text');
+
     const comments = [
       {name: "Глеб Фокин", data: "12.02.22 12:18", text: "Это будет первый комментарий на этой странице", counter: 3, like: false},
       {name: "Варвара Н.", data: "13.02.22 19:22", text: "Мне нравится как оформлена эта страница! ❤", counter: 75, like: true}
@@ -40,7 +34,7 @@
       const listEl = document.querySelector('.comments');
 
       const render = comments.map((comment, index) => {
-        return `<li class="comment">
+        return `<li class="comment" data-comm="${index}">
           <div class="comment-header">
             <div>${comment.name}</div>
             <div>${comment.data}</div>
@@ -61,12 +55,31 @@
       
       listEl.innerHTML = render;
     };
-    
+
+    const commentsButtons = () => {
+      const commentButtons = document.querySelectorAll('li');
+      
+      commentButtons.forEach(el => {
+        el.addEventListener('click', () => {
+          const comment = el.dataset.comm;
+
+          nameEl.value = `&gt; ${comments[comment].name}`;
+          textEl.value = comments[comment].text;
+
+          commentRendering();
+          commentsButtons();
+          likeButtons();
+        });
+      });
+    };
+
     const likeButtons = () => {
       const likeBtns = document.querySelectorAll('.like-button');
       
       likeBtns.forEach(el => {
-        el.addEventListener('click', function() {
+        el.addEventListener('click', function(event) {
+          event.stopPropagation();
+
           const commentEl = this.parentElement.querySelector('.likes-counter');
           const index = commentEl.dataset.index;
           const comment = comments[index];
@@ -81,13 +94,12 @@
           
           commentRendering();
           likeButtons();
+          commentsButtons();
         });
       });
     };
-    
+   
     const newComment = () => {
-      const nameEl = document.querySelector('.add-form-name');
-      const textEl = document.querySelector('.add-form-text');
       const addBtn = document.querySelector('.add-form-button');
 
       const nowDate = new Date().toLocaleString('ru-RU', {
@@ -119,18 +131,26 @@
           return;
         }
   
-        comments.push({name: nameEl.value, data: nowDate, text: textEl.value, counter: 0, like: false});
+        comments.push({
+          name: nameEl.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"), 
+          data: nowDate, 
+          text: textEl.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"), 
+          counter: 0, 
+          like: false
+        });
   
         nameEl.value = '';
         textEl.value = '';
   
         commentRendering();
+        commentsButtons();
         likeButtons();
       });
     };
     newComment();
 
     commentRendering();
+    commentsButtons();
     likeButtons();
   </script>
 </html>
