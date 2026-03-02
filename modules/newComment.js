@@ -1,7 +1,6 @@
-import { updateComments } from "./comments.js";
-import { commentRendering } from "./rendering.js";
 import { nameEl, textEl } from "./comments.js";
 import { replaceMethod } from "./methods.js";
+import { fetchFunc } from "./fetchFunc.js";
 
 export const newComment = () => {
   const addBtn = document.querySelector(".add-form-button");
@@ -35,25 +34,28 @@ export const newComment = () => {
       data: new Date(),
       likes: 0,
       isLiked: false,
+      isLikeLoading: false,
       name: replaceMethod(nameEl),
       text: replaceMethod(textEl),
     };
+
+    const formContainer = document.querySelector(".add-form");
+    formContainer.style.display = "none";
+    const loadMessage = document.querySelector(".loadMess")
+    loadMessage.style.display = "block";
 
     fetch("https://wedev-api.sky.pro/api/v1/igor-shabalin/comments", {
       method: "POST",
       body: JSON.stringify(newComm),
     })
+      .then(() => fetchFunc())
       .then(() => {
-        return fetch("https://wedev-api.sky.pro/api/v1/igor-shabalin/comments")
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        updateComments(data.comments);
-        commentRendering();
-
         nameEl.removeAttribute("readonly");
         nameEl.value = "";
         textEl.value = "";
+
+        loadMessage.style.display = "none";
+        formContainer.style.display = "block";
       })
       .catch((err) => {
         console.log(err);
