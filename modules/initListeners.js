@@ -7,13 +7,18 @@ export const commentsButtons = () => {
 
   commentButtons.forEach((el) => {
     el.addEventListener("click", () => {
-      const comment = el.dataset.comm;
+      let comment = el.dataset.id;
+      
+      comments.forEach((el) => {
+        if (+comment === el.id) {  
+          return comment = el;
+        }
+      });
 
-      nameEl.value = `&gt; ${comments[comment].name}`;
-      nameEl.setAttribute('readonly', '');
-      textEl.value = comments[comment].text;
+      nameEl.value = `&gt; ${comment.author.name}`;
+      nameEl.setAttribute("readonly", "");
+      textEl.value = comment.text;
 
-      commentsButtons();
       likeButtons();
     });
   });
@@ -27,20 +32,23 @@ export const likeButtons = () => {
       event.stopPropagation();
 
       const commentEl = this.parentElement.querySelector(".likes-counter");
-      const index = commentEl.dataset.index;
-      const comment = comments[index];
+      let id = commentEl.dataset.index;
 
-      if (comment.like) {
-        comment.like = false;
-        --comment.counter;
+      comments.forEach((el) => {
+        if (+id === el.id) {  
+          return id = el;
+        }
+      });
+
+      if (id.isLiked) {
+        id.isLiked = false;
+        --id.likes;
       } else {
-        comment.like = true;
-        ++comment.counter;
+        id.isLiked = true;
+        ++id.likes;
       }
 
       commentRendering();
-      likeButtons();
-      commentsButtons();
     });
   });
 };

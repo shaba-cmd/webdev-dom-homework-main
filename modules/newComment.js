@@ -1,58 +1,62 @@
-import { comments } from "./comments.js";
+import { updateComments } from "./comments.js";
 import { commentRendering } from "./rendering.js";
-import { commentsButtons, likeButtons } from "./initListeners.js";
 import { nameEl, textEl } from "./comments.js";
 import { replaceMethod } from "./methods.js";
 
 export const newComment = () => {
   const addBtn = document.querySelector(".add-form-button");
-
-  const nowDate = new Date()
-    .toLocaleString("ru-RU", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-    .replace(/,/, "");
+  const formErrClass = "-form-error";
 
   nameEl.addEventListener("focus", () => {
-    nameEl.classList.remove("-form-error");
+    nameEl.classList.remove(formErrClass);
   });
 
   textEl.addEventListener("focus", () => {
-    textEl.classList.remove("-form-error");
+    textEl.classList.remove(formErrClass);
   });
 
-  addBtn.addEventListener("click", () => { 
+  addBtn.addEventListener("click", () => {
     if (nameEl.value === "" && textEl.value === "") {
-      nameEl.classList.add("-form-error");
-      textEl.classList.add("-form-error");
+      nameEl.classList.add(formErrClass);
+      textEl.classList.add(formErrClass);
+      alert("Текст в полях должен быть не менее 3 символов");
       return;
-    } else if (nameEl.value === "") {
-      nameEl.classList.add("-form-error");
+    } else if (nameEl.value === "" || nameEl.value.length < 3) {
+      nameEl.classList.add(formErrClass);
+      alert("Текст автора должен быть не менее 3 символов");
       return;
-    } else if (textEl.value === "") {
-      textEl.classList.add("-form-error");
+    } else if (textEl.value === "" || textEl.value.length < 3) {
+      textEl.classList.add(formErrClass);
+      alert("Текст комментария должен быть не менее 3 символов");
       return;
     }
-    
-    nameEl.removeAttribute('readonly');
 
-    comments.push({
+    const newComm = {
+      data: new Date(),
+      likes: 0,
+      isLiked: false,
       name: replaceMethod(nameEl),
-      data: nowDate,
       text: replaceMethod(textEl),
-      counter: 0,
-      like: false,
-    });
+    };
 
-    nameEl.value = "";
-    textEl.value = "";
+    fetch("https://wedev-api.sky.pro/api/v1/igor-shabalin/comments", {
+      method: "POST",
+      body: JSON.stringify(newComm),
+    })
+      .then(() => {
+        return fetch("https://wedev-api.sky.pro/api/v1/igor-shabalin/comments")
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        updateComments(data.comments);
+        commentRendering();
 
-    commentRendering();
-    commentsButtons();
-    likeButtons();
+        nameEl.removeAttribute("readonly");
+        nameEl.value = "";
+        textEl.value = "";
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 };
