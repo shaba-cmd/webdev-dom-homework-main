@@ -55,7 +55,7 @@ export const newComment = () => {
         textEl.value = "";
 
         loadMessage.style.display = "none";
-        formContainer.style.display = "block";
+        formContainer.style.display = "flex";
       })
       .catch((err) => {
         console.log(err);
