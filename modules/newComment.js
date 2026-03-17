@@ -22,7 +22,7 @@ export const newComment = () => {
       isLikeLoading: false,
       name: replaceMethod(nameEl),
       text: replaceMethod(textEl),
-      forceError: true,
+      forceError: true, // проверка 500
     };
 
     const formContainer = document.querySelector(".add-form");
