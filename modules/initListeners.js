@@ -8,18 +8,16 @@ export const commentsButtons = () => {
   commentButtons.forEach((el) => {
     el.addEventListener("click", () => {
       let comment = el.dataset.id;
-      
+
       comments.forEach((el) => {
-        if (+comment === el.id) {  
-          return comment = el;
+        if (+comment === el.id) {
+          return (comment = el);
         }
       });
 
       nameEl.value = `&gt; ${comment.author.name}`;
       nameEl.setAttribute("readonly", "");
       textEl.value = comment.text;
-
-      likeButtons();
     });
   });
 };
@@ -35,18 +33,27 @@ export const likeButtons = () => {
       let id = commentEl.dataset.index;
 
       comments.forEach((el) => {
-        if (+id === el.id) {  
-          return id = el;
+        if (+id === el.id) {
+          return (id = el);
         }
       });
 
-      if (id.isLiked) {
-        id.isLiked = false;
-        --id.likes;
-      } else {
-        id.isLiked = true;
-        ++id.likes;
+      id.isLikeLoading = true;
+
+      function delay(interval = 300) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, interval);
+        });
       }
+      
+      delay(2000).then(() => {
+        id.likes = id.isLiked ? id.likes - 1 : id.likes + 1;
+        id.isLiked = !id.isLiked;
+        id.isLikeLoading = false;
+        commentRendering();
+      });
 
       commentRendering();
     });

@@ -20,7 +20,7 @@ export const commentRendering = () => {
           <div class="comment-footer">
             <div class="likes">
               <span class="likes-counter" data-index="${comment.id}">${comment.likes}</span>
-              <button class="like-button ${comment.isLiked ? "-active-like" : ""}"></button>
+              <button class="like-button ${comment.isLiked ? "-active-like" : ""} ${comment.isLikeLoading ? "-loading-like" : ""}"></button>
             </div>
           </div>
         </li>`;
@@ -29,6 +29,6 @@ export const commentRendering = () => {
 
   listEl.innerHTML = render;
 
-  commentsButtons();
   likeButtons();
+  commentsButtons();
 };
