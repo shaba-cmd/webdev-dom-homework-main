@@ -3,12 +3,16 @@ import { commentRendering } from "./rendering.js";
 
 export const fetchFunc = () => {
   return fetch("https://wedev-api.sky.pro/api/v1/igor-shabalin/comments")
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.status === 200 || response.status === 201) {
+        return response.json();
+      }
+    })
     .then((data) => {
       updateComments(data.comments);
-      commentRendering()
+      commentRendering();
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((error) => {
+      console.log(error);
     });
 };
