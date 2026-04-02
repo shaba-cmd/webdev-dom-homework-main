@@ -1,3 +1,4 @@
-import { newComment } from "./modules/newComment.js";
+import { updateComments } from './modules/comments.js';
 
-newComment();
+updateComments();
+

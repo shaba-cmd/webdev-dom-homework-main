@@ -1,23 +1,18 @@
+import { likeComment, token } from "./api.js";
 import { comments } from "./comments.js";
 import { commentRendering } from "./rendering.js";
-import { nameEl, textEl } from "./comments.js";
 
 export const commentsButtons = () => {
-  const commentButtons = document.querySelectorAll("li");
+  const commentElements = document.querySelectorAll(".comment");
 
-  commentButtons.forEach((el) => {
+  commentElements.forEach((el) => {
     el.addEventListener("click", () => {
-      let comment = el.dataset.id;
+      const textEl = document.querySelector(".add-form-text");
+      
+      const commentId = el.dataset.id;      
+      const comment = comments.find((c) => c.id === commentId);
 
-      comments.forEach((el) => {
-        if (+comment === el.id) {
-          return (comment = el);
-        }
-      });
-
-      nameEl.value = `&gt; ${comment.author.name}`;
-      nameEl.setAttribute("readonly", "");
-      textEl.value = comment.text;
+      textEl.value = `> ${comment.author.name}: ${comment.text}`;
     });
   });
 };
@@ -25,37 +20,32 @@ export const commentsButtons = () => {
 export const likeButtons = () => {
   const likeBtns = document.querySelectorAll(".like-button");
 
-  likeBtns.forEach((el) => {
-    el.addEventListener("click", function (event) {
+  likeBtns.forEach((btn) => {
+    btn.addEventListener("click", function (event) {
       event.stopPropagation();
 
-      const commentEl = this.parentElement.querySelector(".likes-counter");
-      let id = commentEl.dataset.index;
-
-      comments.forEach((el) => {
-        if (+id === el.id) {
-          return (id = el);
-        }
-      });
-
-      id.isLikeLoading = true;
-
-      function delay(interval = 300) {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve();
-          }, interval);
-        });
-      }
+      const commentEl = this.closest(".comment");
+      const commentId = commentEl.dataset.id;
       
-      delay(2000).then(() => {
-        id.likes = id.isLiked ? id.likes - 1 : id.likes + 1;
-        id.isLiked = !id.isLiked;
-        id.isLikeLoading = false;
-        commentRendering();
-      });
-
+      const comment = comments.find((c) => c.id === commentId);
+ 
+      comment.isLikeLoading = true;
       commentRendering();
+
+      likeComment(commentId, token)
+        .then((data) => {
+          comment.likes = data.result.likes;
+          comment.isLiked = data.result.isLiked;
+          comment.isLikeLoading = false;
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("Не удалось поставить лайк");
+          comment.isLikeLoading = false;
+        })
+        .finally(() => {
+          commentRendering();
+        });
     });
   });
 };
