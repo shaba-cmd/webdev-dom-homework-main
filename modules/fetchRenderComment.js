@@ -2,7 +2,7 @@ import { getComments } from "./api.js";
 import { updateComments } from "./comments.js";
 import { commentRendering } from "./rendering.js";
 
-export const fetchFunc = (loader) => {
+export const fetchRenderComment = (loader) => {
   if (loader) {
     document.querySelector(".container").innerHTML = ` 
       Комментарии загружаются...

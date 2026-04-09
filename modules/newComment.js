@@ -1,5 +1,5 @@
 import { replaceMethod } from "./methods.js";
-import { fetchFunc } from "./fetchFunc.js";
+import { fetchRenderComment } from "./fetchRenderComment.js";
 import { postComments } from "./api.js";
 
 export const newComment = () => {
@@ -48,7 +48,7 @@ export const newComment = () => {
           }
         }
       })
-      .then(() => fetchFunc())
+      .then(() => fetchRenderComment())
       .then(() => {
         nameEl.value = "";
         textEl.value = "";

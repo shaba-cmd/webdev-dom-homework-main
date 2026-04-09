@@ -1,6 +1,7 @@
-import { login, updateName, updateToken } from "./api.js";
-import { fetchFunc } from "./fetchFunc.js";
+import { login } from "./api.js";
+import { fetchRenderComment } from "./fetchRenderComment.js";
 import { renderRegistration } from "./renderRegistration.js";
+import { updateName, updateToken } from "./saveData.js";
 
 export const renderLogin = () => {
   const container = document.querySelector(".container");
@@ -30,9 +31,9 @@ export const renderLogin = () => {
   button.addEventListener("click", () => {
     login(logInput.value, passInput.value)
       .then((data) => {
-        updateToken(data.user.token); 
+        updateToken(data.user.token);
         updateName(data.user.name);
-        fetchFunc();
+        fetchRenderComment();
       })
       .catch((error) => {
         alert(error.message);

@@ -1,5 +1,5 @@
 import { comments } from "./comments.js";
-import { logout, name, token } from "./api.js";
+import { logout, name, token } from "./saveData.js";
 import { commentsButtons, likeButtons } from "./initListeners.js";
 import { newComment } from "./newComment.js";
 import { nowDateTime } from "./methods.js";

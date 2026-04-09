@@ -1,4 +1,4 @@
-import { updateComments } from './modules/comments.js';
+import { fetchRenderComment } from "./modules/fetchRenderComment.js";
 
-updateComments();
+fetchRenderComment();
 

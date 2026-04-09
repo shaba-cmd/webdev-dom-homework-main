@@ -1,6 +1,7 @@
-import { likeComment, token } from "./api.js";
+import { likeComment } from "./api.js";
 import { comments } from "./comments.js";
 import { commentRendering } from "./rendering.js";
+import { token } from "./saveData.js";
 
 export const commentsButtons = () => {
   const commentElements = document.querySelectorAll(".comment");
@@ -8,8 +9,8 @@ export const commentsButtons = () => {
   commentElements.forEach((el) => {
     el.addEventListener("click", () => {
       const textEl = document.querySelector(".add-form-text");
-      
-      const commentId = el.dataset.id;      
+
+      const commentId = el.dataset.id;
       const comment = comments.find((c) => c.id === commentId);
 
       textEl.value = `> ${comment.author.name}: ${comment.text}`;
@@ -26,9 +27,9 @@ export const likeButtons = () => {
 
       const commentEl = this.closest(".comment");
       const commentId = commentEl.dataset.id;
-      
+
       const comment = comments.find((c) => c.id === commentId);
- 
+
       comment.isLikeLoading = true;
       commentRendering();
 

@@ -1,6 +1,7 @@
-import { registration, updateName, updateToken } from "./api.js";
-import { fetchFunc } from "./fetchFunc.js";
+import { registration } from "./api.js";
+import { fetchRenderComment } from "./fetchRenderComment.js";
 import { renderLogin } from "./renderLogin.js";
+import { updateName, updateToken } from "./saveData.js";
 
 export const renderRegistration = () => {
   const container = document.querySelector(".container");
@@ -38,7 +39,7 @@ export const renderRegistration = () => {
       .then((data) => {
         updateToken(data.user.token);
         updateName(data.user.name);
-        fetchFunc();
+        fetchRenderComment();
       })
       .catch((error) => {
         alert(error.message);
