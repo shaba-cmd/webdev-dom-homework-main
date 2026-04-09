@@ -1,11 +1,14 @@
 import { comments } from "./comments.js";
+import { logout, name, token } from "./saveData.js";
 import { commentsButtons, likeButtons } from "./initListeners.js";
+import { newComment } from "./newComment.js";
 import { nowDateTime } from "./methods.js";
+import { renderLogin } from "./renderLogin.js";
 
 export const commentRendering = () => {
-  const listEl = document.querySelector(".comments");
+  const container = document.querySelector(".container");
 
-  const render = comments
+  const commHtml = comments
     .map((comment) => {
       return `<li class="comment" data-id="${comment.id}">
           <div class="comment-header">
@@ -27,8 +30,51 @@ export const commentRendering = () => {
     })
     .join("");
 
-  listEl.innerHTML = render;
+  const addForm = `
+      <p class="loadMess">Добавление комментария...</p>
 
-  likeButtons();
-  commentsButtons();
+      <div class="add-form">
+        <input
+          type="text"
+          class="add-form-name"
+          placeholder="Введите ваше имя"
+          readonly
+          value="${name}"
+        />
+        <textarea
+          type="textarea"
+          class="add-form-text"
+          placeholder="Введите ваш коментарий"
+          rows="4"
+        ></textarea>
+        <div class="add-form-row">
+          <p id="logout-btn" class="active">Выйти</p>
+          <button class="add-form-button">Написать</button>
+        </div>
+      </div>
+  `;
+
+  const linkLogin = `<p><span class='link-login'>Ввойдите</span>, что бы отправить комментарий</p>`;
+
+  const renderHtml = `
+    <ul class="comments">${commHtml}</ul>
+    ${token ? addForm : linkLogin}
+  `;
+
+  container.innerHTML = renderHtml;
+
+  if (token) {
+    likeButtons();
+    commentsButtons();
+    newComment();
+
+    document.getElementById("logout-btn")?.addEventListener("click", () => {
+      logout();
+      commentRendering();
+    });
+  } else {
+    document.querySelector(".link-login").addEventListener("click", () => {
+      renderLogin();
+    });
+  }
 };

@@ -1,13 +1,15 @@
+import { getComments } from "./api.js";
 import { updateComments } from "./comments.js";
 import { commentRendering } from "./rendering.js";
 
-export const fetchFunc = () => {
-  return fetch("https://wedev-api.sky.pro/api/v1/igor-shabalin/comments")
-    .then((response) => {
-      if (response.status === 200 || response.status === 201) {
-        return response.json();
-      }
-    })
+export const fetchRenderComment = (loader) => {
+  if (loader) {
+    document.querySelector(".container").innerHTML = ` 
+      Комментарии загружаются...
+    `;
+  }
+
+  getComments()
     .then((data) => {
       updateComments(data.comments);
       commentRendering();
